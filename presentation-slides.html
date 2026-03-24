@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Appointment - Presentation | Nitin Singh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-dark: #0f172a;
+      --accent: #06b6d4;
+      --accent-2: #8b5cf6;
+      --accent-3: #f43f5e;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --card: rgba(30, 41, 59, 0.8);
+      --glow: rgba(6, 182, 212, 0.4);
+    }
+    html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    .slide {
+      min-height: 100vh;
+      width: 100%;
+      padding: 2.5rem 3.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 80% 50% at 50% -20%, var(--glow), transparent 60%);
+      opacity: 0.5;
+      z-index: 0;
+    }
+    .slide-content { position: relative; z-index: 2; max-width: 920px; }
+
+    /* Decorative shapes (PPT-style) */
+    .shape {
+      position: absolute;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.16;
+      filter: drop-shadow(0 0 18px rgba(6, 182, 212, 0.18));
+    }
+    .shape.blob {
+      width: 260px;
+      height: 260px;
+      border-radius: 30% 70% 65% 35% / 30% 30% 70% 70%;
+      background: radial-gradient(circle at 30% 30%, rgba(6, 182, 212, 0.9), rgba(139, 92, 246, 0.55));
+      transform: rotate(-12deg);
+    }
+    .shape.ring {
+      width: 310px;
+      height: 310px;
+      border-radius: 999px;
+      border: 2px dashed rgba(241, 245, 249, 0.32);
+      box-shadow: inset 0 0 0 2px rgba(139, 92, 246, 0.08);
+    }
+    .shape.dots {
+      width: 260px;
+      height: 140px;
+      background-image: radial-gradient(rgba(241, 245, 249, 0.35) 1.6px, transparent 1.7px);
+      background-size: 18px 18px;
+      border-radius: 14px;
+      transform: rotate(8deg);
+    }
+    .shape.a { top: -70px; left: -70px; }
+    .shape.b { bottom: -120px; right: -120px; }
+    .shape.c { top: 22%; right: 5%; }
+
+    .slide-intro {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0f172a 100%);
+      text-align: center;
+      align-items: center;
+    }
+    .slide-intro .badge {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--accent);
+      border-radius: 100px;
+    }
+    .slide-intro h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, #fff, var(--accent), #e0f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .slide-intro .subtitle { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .slide-intro .subject-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin: 0 auto 2rem;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent), #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .slide-intro .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .slide-intro .meta span {
+      padding: 0.5rem 1.25rem;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    .slide-intro .meta strong { color: var(--accent); margin-right: 0.5rem; }
+
+    .slide h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .slide h2 .dot {
+      width: 10px;
+      height: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius: 50%;
+      box-shadow: 0 0 16px var(--glow);
+    }
+    .slide p, .slide li { color: var(--text-muted); font-size: 1rem; margin-bottom: 0.5rem; }
+    .slide ul { list-style: none; padding-left: 0; }
+    .slide ul li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin-bottom: 0.55rem;
+    }
+    .slide ul li::before {
+      content: '▸';
+      color: var(--accent);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .slide ul.dense li { margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 0.75rem; }
+    .slide-problem { background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); }
+    .slide-problem .card-wrap { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
+    .slide-problem .card {
+      background: var(--card);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      border-left: 4px solid var(--accent-3);
+      font-size: 0.98rem;
+    }
+
+    .slide-solution { background: linear-gradient(180deg, #0f172a 0%, #0c4a6e 30%, #0f172a 100%); }
+    .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 1rem; }
+    .role-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 1.25rem;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      text-align: center;
+    }
+    .role-card h3 { font-size: 1.15rem; color: var(--accent); margin-bottom: 0.5rem; }
+    .role-card p { font-size: 0.9rem; margin-bottom: 0; }
+
+    .slide-tech { background: linear-gradient(180deg, #0f172a 0%, #312e81 40%, #0f172a 100%); }
+    .tech-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 0.75rem; }
+    .tech-item {
+      background: var(--card);
+      padding: 0.9rem 1.1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+    }
+    .tech-item strong { color: var(--accent); min-width: 95px; }
+
+    .slide-features { background: linear-gradient(180deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); }
+    .slide-features ul { max-width: 100%; }
+    .slide-features ul.dense li { font-size: 0.92rem; margin-bottom: 0.45rem; }
+
+    .slide-flow { background: linear-gradient(180deg, #0f172a 0%, #4c1d95 30%, #0f172a 100%); }
+    .flow-steps { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem; }
+    .flow-step {
+      background: var(--card);
+      padding: 0.9rem 1.25rem;
+      border-radius: 10px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      flex: 1;
+      min-width: 180px;
+      font-size: 0.95rem;
+    }
+    .flow-step span { color: var(--accent-2); font-weight: 600; }
+
+    .slide-module h3 { font-size: 1.1rem; color: var(--accent); margin: 1rem 0 0.5rem; }
+    .slide-module h3:first-of-type { margin-top: 0.5rem; }
+    .slide-module ul { margin-bottom: 0.5rem; }
+    .slide-module ul li { font-size: 0.95rem; }
+
+    .slide-db { background: linear-gradient(180deg, #0f172a 0%, #1e3a5f 40%, #0f172a 100%); }
+    .model-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      border-left: 4px solid var(--accent-2);
+    }
+    .model-card h3 { font-size: 1rem; color: var(--accent-2); margin-bottom: 0.4rem; }
+    .model-card p, .model-card code { font-size: 0.9rem; color: var(--text-muted); }
+    .model-card code { background: rgba(0,0,0,0.2); padding: 0.1rem 0.3rem; border-radius: 4px; }
+
+    .slide-api { background: linear-gradient(180deg, #0f172a 0%, #0c4a6e 35%, #0f172a 100%); }
+    .api-list { margin-top: 0.5rem; }
+    .api-list li { font-size: 0.9rem; margin-bottom: 0.4rem; }
+
+    .slide-thankyou {
+      background: linear-gradient(135deg, #0f172a 0%, #155e75 50%, #0f172a 100%);
+      text-align: center;
+      align-items: center;
+    }
+    .slide-thankyou h2 { justify-content: center; }
+    .slide-thankyou .big { font-size: 2.2rem; color: #fff; margin-top: 1rem; }
+    .slide-thankyou .small { font-size: 1.05rem; color: var(--text-muted); margin-top: 0.5rem; }
+
+    .slide-num { position: absolute; bottom: 1rem; right: 2rem; font-size: 0.8rem; color: var(--text-muted); opacity: 0.8; z-index: 2; }
+    @media (max-width: 768px) {
+      .slide { padding: 1.75rem 1.25rem; }
+      .roles { grid-template-columns: 1fr; }
+      .tech-grid { grid-template-columns: 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+      .slide-intro .meta { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <!-- SLIDE 1: Intro -->
+  <section class="slide slide-intro">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <div class="badge">Final Year Project</div>
+      <h1>Smart Appointment &<br />Prescription Management System</h1>
+      <p class="subtitle">For Clinics & Small Hospitals — Secure digital appointments, prescriptions & medical history</p>
+      <div class="subject-name">Comprehensive Seminar</div>
+      <div class="meta">
+        <span><strong>Name:</strong> Nitin Singh</span>
+        <span><strong>Reg. No.:</strong> 12201895</span>
+        <span><strong>Subject:</strong> CSE 435 · Comprehensive Seminar</span>
+      </div>
+    </div>
+    <span class="slide-num">1</span>
+  </section>
+
+  <!-- SLIDE 2: Problem (expanded) -->
+  <section class="slide slide-problem">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> ⚠️ Problem Statement</h2>
+      <p>Small clinics and hospitals rely on manual processes and face these challenges:</p>
+      <div class="card-wrap">
+        <div class="card"><strong>Appointment clashes:</strong> Manual booking leads to double-booking, same slot given to multiple patients, and no visibility of doctor availability.</div>
+        <div class="card"><strong>Paper-based prescriptions:</strong> Prescriptions get lost, damaged, or illegible; no digital backup or searchable history.</div>
+        <div class="card"><strong>Inefficient scheduling:</strong> Doctors and staff spend time on phone calls and registers instead of focusing on patients.</div>
+        <div class="card"><strong>No central medical history:</strong> Past visits, prescriptions, and diagnoses are not in one place — poor continuity of care.</div>
+        <div class="card"><strong>Poor patient experience:</strong> Long wait times, no online booking, and no way to check appointment status from home.</div>
+      </div>
+      <p style="margin-top: 1rem; font-style: italic;">Goal: Build a secure, scalable digital system for appointments, prescriptions, and patient medical history.</p>
+    </div>
+    <span class="slide-num">2</span>
+  </section>
+
+  <!-- SLIDE 3: Solution / Roles -->
+  <section class="slide slide-solution">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 💡 Our Solution</h2>
+      <p>A full-stack web application with <strong>three role-based dashboards</strong> and separate permissions:</p>
+      <div class="roles">
+        <div class="role-card">
+          <h3>Patient</h3>
+          <p>Register, view doctors by specialization, book appointments, view status, prescriptions & full medical history.</p>
+        </div>
+        <div class="role-card">
+          <h3>Doctor</h3>
+          <p>View assigned appointments, approve/reject requests, create digital prescriptions, view patient history & daily schedule.</p>
+        </div>
+        <div class="role-card">
+          <h3>Admin</h3>
+          <p>Add/remove doctors, view all patients & appointments, system overview dashboard and monitoring.</p>
+        </div>
+      </div>
+      <p style="margin-top: 1rem;">Each role has its own login, dashboard, and access control — no cross-access between roles.</p>
+    </div>
+    <span class="slide-num">3</span>
+  </section>
+
+  <!-- SLIDE 4: Patient Module (detailed) -->
+  <section class="slide slide-module slide-problem">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🧑‍🤝‍🧑 Patient Module — Detailed</h2>
+      <p>Everything a patient can do after registration and login:</p>
+      <h3>Registration & Login</h3>
+      <ul>
+        <li>Register with name, email, password (min 6 characters); role is set as Patient.</li>
+        <li>Login with email and password; receive JWT token for subsequent API calls.</li>
+      </ul>
+      <h3>Doctors & Appointments</h3>
+      <ul>
+        <li>View list of all doctors with their name, email, and specialization.</li>
+        <li>Book an appointment by selecting doctor, date, and time (no double-booking — slot validation on backend).</li>
+        <li>View appointment status: Pending, Approved, or Rejected.</li>
+      </ul>
+      <h3>Prescriptions & History</h3>
+      <ul>
+        <li>View and download prescriptions (medicines, dosage, duration, remarks).</li>
+        <li>View complete medical history: all past appointments and prescriptions in one place.</li>
+      </ul>
+    </div>
+    <span class="slide-num">4</span>
+  </section>
+
+  <!-- SLIDE 5: Doctor Module (detailed) -->
+  <section class="slide slide-module slide-solution">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🩺 Doctor Module — Detailed</h2>
+      <p>Features available only to users with the Doctor role:</p>
+      <h3>Login & Dashboard</h3>
+      <ul>
+        <li>Secure login; dashboard shows daily schedule and counts (today’s appointments, pending requests, prescriptions created).</li>
+      </ul>
+      <h3>Appointments</h3>
+      <ul>
+        <li>View all appointments assigned to the doctor (patient name, date, time, status).</li>
+        <li>Approve or reject pending appointment requests with one click.</li>
+      </ul>
+      <h3>Prescriptions</h3>
+      <ul>
+        <li>Create digital prescriptions only for approved appointments: add medicines with name, dosage, duration, and optional remarks.</li>
+        <li>View list of all prescriptions created by the doctor.</li>
+      </ul>
+      <h3>Patient History</h3>
+      <ul>
+        <li>Select a patient (from own appointments) to view their full medical history: past appointments and prescriptions.</li>
+      </ul>
+    </div>
+    <span class="slide-num">5</span>
+  </section>
+
+  <!-- SLIDE 6: Admin Module (detailed) -->
+  <section class="slide slide-module slide-flow">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🛡️ Admin Module — Detailed</h2>
+      <p>Features available only to users with the Admin role:</p>
+      <h3>Login & Overview</h3>
+      <ul>
+        <li>Login with admin credentials (e.g. created via seed script).</li>
+        <li>System overview dashboard: total doctors, patients, appointments, prescriptions (counts).</li>
+      </ul>
+      <h3>Doctor Management</h3>
+      <ul>
+        <li>Add new doctors: name, email, password, specialization.</li>
+        <li>View list of all doctors; remove a doctor from the system.</li>
+      </ul>
+      <h3>Monitoring</h3>
+      <ul>
+        <li>View all patients (name, email, join date).</li>
+        <li>View all appointments across the system (patient, doctor, date, time, status).</li>
+      </ul>
+      <p style="margin-top: 0.75rem;">Admin does not create prescriptions or approve appointments — that is the doctor’s role.</p>
+    </div>
+    <span class="slide-num">6</span>
+  </section>
+
+  <!-- SLIDE 7: Tech Stack (expanded) -->
+  <section class="slide slide-tech">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> ⚙️ Tech Stack</h2>
+      <div class="tech-grid">
+        <div class="tech-item"><strong>Frontend</strong> React 18 (functional components, hooks), React Router, Axios, Tailwind CSS, Vite</div>
+        <div class="tech-item"><strong>Backend</strong> Node.js, Express.js (REST API)</div>
+        <div class="tech-item"><strong>Database</strong> MongoDB with Mongoose ODM</div>
+        <div class="tech-item"><strong>Auth</strong> JWT (JSON Web Token), role-based middleware, bcrypt for password hashing</div>
+        <div class="tech-item"><strong>API</strong> RESTful design, express-validator for input validation, centralized error handling</div>
+        <div class="tech-item"><strong>UI</strong> Responsive, clean, minimal; forms with client-side validation</div>
+      </div>
+      <p style="margin-top: 0.75rem;">Industry-standard stack suitable for final year submission and scalable for future extensions.</p>
+    </div>
+    <span class="slide-num">7</span>
+  </section>
+
+  <!-- SLIDE 8: Database Models -->
+  <section class="slide slide-db">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🗄️ Database Models (MongoDB / Mongoose)</h2>
+      <p>Three main collections with clear relationships:</p>
+      <div class="model-card">
+        <h3>User</h3>
+        <p><code>name</code>, <code>email</code>, <code>password</code> (hashed), <code>role</code> (admin | doctor | patient), <code>specialization</code> (for doctor only)</p>
+      </div>
+      <div class="model-card">
+        <h3>Appointment</h3>
+        <p><code>patientId</code> (ref User), <code>doctorId</code> (ref User), <code>date</code>, <code>time</code>, <code>status</code> (pending | approved | rejected)</p>
+      </div>
+      <div class="model-card">
+        <h3>Prescription</h3>
+        <p><code>appointmentId</code> (ref Appointment), <code>medicines</code> (array: name, dosage, duration), <code>remarks</code>, <code>createdAt</code></p>
+      </div>
+      <p>Indexes and validation ensure no double-booking (same doctor, date, time) and referential integrity.</p>
+    </div>
+    <span class="slide-num">8</span>
+  </section>
+
+  <!-- SLIDE 9: API & Security -->
+  <section class="slide slide-api">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🔐 API & Security</h2>
+      <p><strong>Authentication APIs:</strong> Register (patient), Login (all roles), Get current user (protected).</p>
+      <p><strong>Appointment APIs:</strong> List doctors, List appointments (role-filtered), Book appointment (patient), Update status approve/reject (doctor).</p>
+      <p><strong>Prescription APIs:</strong> List prescriptions (role-filtered), Create prescription (doctor), Get single prescription.</p>
+      <p><strong>Admin APIs:</strong> Overview counts, List patients, List all appointments, Add/List/Remove doctors.</p>
+      <p style="margin-top: 0.75rem;"><strong>Security:</strong> JWT in Authorization header; role-based middleware (authorize('admin'), authorize('doctor'), authorize('patient')); bcrypt for passwords; express-validator on all inputs; centralized error handler and clean API responses.</p>
+    </div>
+    <span class="slide-num">9</span>
+  </section>
+
+  <!-- SLIDE 10: Key Features (expanded) -->
+  <section class="slide slide-features">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> ✨ Key Features — Summary</h2>
+      <ul class="dense">
+        <li>JWT-based authentication; token stored securely on frontend; automatic redirect on expiry.</li>
+        <li>Role-based authorization: Admin, Doctor, Patient — each with separate dashboards and permissions.</li>
+        <li>Patient: Register, view doctors with specialization, book appointments (date/time), view status (pending/approved/rejected), view and download prescriptions, view complete medical history.</li>
+        <li>Doctor: View assigned appointments, approve or reject requests, create digital prescriptions (medicines, dosage, remarks), view patient medical history, dashboard with daily schedule.</li>
+        <li>Admin: Add and remove doctors, view all patients, monitor all appointments, system overview dashboard with counts.</li>
+        <li>Secure password hashing (bcrypt), input validation (frontend + backend), centralized error handling, RESTful API design, scalable and readable code structure.</li>
+      </ul>
+    </div>
+    <span class="slide-num">10</span>
+  </section>
+
+  <!-- SLIDE 11: Application Flow -->
+  <section class="slide slide-flow">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🔁 Application Flow</h2>
+      <p>End-to-end flow: Login → Role-based redirect → Dashboard actions:</p>
+      <div class="flow-steps">
+        <div class="flow-step"><span>Patient:</span> Book appointment (select doctor, date, time) → View status → View prescriptions & full medical history.</div>
+        <div class="flow-step"><span>Doctor:</span> See pending appointments → Approve/Reject → For approved, create prescription (medicines, dosage, remarks) → View patient history.</div>
+        <div class="flow-step"><span>Admin:</span> Add doctors (name, email, password, specialization) → View all patients & appointments → System overview.</div>
+      </div>
+      <p style="margin-top: 0.75rem;">Frontend: React with Axios; JWT sent in header; protected routes redirect unauthenticated users to login.</p>
+    </div>
+    <span class="slide-num">11</span>
+  </section>
+
+  <!-- SLIDE 12: Non-Functional Requirements -->
+  <section class="slide slide-features">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🧩 Non-Functional Requirements</h2>
+      <ul class="dense">
+        <li><strong>Security:</strong> JWT authentication, role-based access control, bcrypt password hashing, validation on every request.</li>
+        <li><strong>Performance:</strong> Lightweight REST APIs, indexed queries on appointments (doctor, date, time) to avoid slow lookups.</li>
+        <li><strong>Reliability:</strong> Centralized error handling, consistent JSON responses, clear HTTP status codes.</li>
+        <li><strong>Usability:</strong> Clean, responsive UI (Tailwind CSS), simple navigation, clear status badges and labels.</li>
+        <li><strong>Scalability:</strong> Modular backend (routes, controllers, models, middleware) and React frontend ready for new modules.</li>
+        <li><strong>Maintainability:</strong> Industry-standard folder structure, separation of concerns, reusable components and hooks.</li>
+      </ul>
+    </div>
+    <span class="slide-num">12</span>
+  </section>
+
+  <!-- SLIDE 13: System Architecture -->
+  <section class="slide slide-tech">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🧱 System Architecture</h2>
+      <div class="two-col">
+        <div>
+          <h3>Frontend (Client)</h3>
+          <ul class="dense">
+            <li>React single-page application with React Router.</li>
+            <li>Auth context stores logged-in user and JWT token.</li>
+            <li>Axios client sends API requests with Authorization header.</li>
+            <li>Role-based routes: <code>/patient</code>, <code>/doctor</code>, <code>/admin</code>.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Backend (Server)</h3>
+          <ul class="dense">
+            <li>Express.js REST API: <code>/api/auth</code>, <code>/api/appointments</code>, <code>/api/prescriptions</code>, <code>/api/admin</code>.</li>
+            <li>Middleware chain: CORS → JSON parser → protect (JWT) → authorize (role).</li>
+            <li>Mongoose models for User, Appointment, Prescription connected to MongoDB.</li>
+            <li>Error handling middleware for logging and safe responses.</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top: 0.75rem;">The architecture separates concerns clearly and makes it easy to add new modules like billing or lab reports.</p>
+    </div>
+    <span class="slide-num">13</span>
+  </section>
+
+  <!-- SLIDE 14: Future Scope & Enhancements -->
+  <section class="slide slide-problem">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🚀 Future Scope & Enhancements</h2>
+      <ul class="dense">
+        <li><strong>Notifications:</strong> SMS / email reminders for upcoming appointments and prescription refills.</li>
+        <li><strong>Online Payments:</strong> Integrate payment gateways for consultation fees and advance booking.</li>
+        <li><strong>Analytics:</strong> Dashboards for appointment trends, doctor load, and patient visit history.</li>
+        <li><strong>Multi-Clinic Support:</strong> Extend the system to support multiple branches and locations.</li>
+        <li><strong>Mobile App:</strong> React Native / Flutter app for patients and doctors for better accessibility.</li>
+        <li><strong>EMR Integration:</strong> Integrate with Electronic Medical Record systems and lab reports.</li>
+      </ul>
+    </div>
+    <span class="slide-num">14</span>
+  </section>
+
+  <!-- SLIDE 15: Thank You -->
+  <section class="slide slide-thankyou">
+    <div class="shape blob a"></div>
+    <div class="shape ring b"></div>
+    <div class="shape dots c"></div>
+    <div class="slide-content">
+      <h2><span class="dot"></span> 🙏 Thank You</h2>
+      <p class="big">Smart Appointment & Prescription Management System</p>
+      <p class="small">Nitin Singh · 12201895 · CSE 435</p>
+      <p class="small" style="margin-top: 1.5rem;">Questions?</p>
+    </div>
+    <span class="slide-num">15</span>
+  </section>
+</body>
+</html>
