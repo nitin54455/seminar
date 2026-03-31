@@ -9,20 +9,7 @@ A full-stack web application for clinics and small hospitals to manage appointme
 - **Database:** MongoDB with Mongoose
 - **Auth:** JWT with role-based middleware, bcrypt password hashing
 
-## Setup & Run
-
-### 1. Backend
-
-```bash
-cd backend
-cp .env.example .env
-# Edit .env: set MONGODB_URI, JWT_SECRET, PORT (default 5000)
-npm install
-npm run dev
-```
-
-
-## Default Credentials (after seed)
+)
 
 - **Admin:** admin@clinic.com / admin123
 
